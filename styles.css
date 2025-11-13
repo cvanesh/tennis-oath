@@ -731,6 +731,14 @@ body.dark-mode .question-item.acknowledged {
     border-color: var(--primary-color);
 }
 
+.creator-note {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    margin-top: 0.05rem;
+    font-style: italic;
+}
+
 /* ========================================
    ANIMATIONS
    ======================================== */
