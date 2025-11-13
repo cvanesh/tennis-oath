@@ -1,0 +1,34 @@
+{
+  "name": "Tennis Player's Oath",
+  "short_name": "Oath",
+  "description": "Tennis Player's Oath - Commitment to Excellence, Improvement, and Love of the Game",
+  "start_url": "/tennis-oath/",
+  "scope": "/tennis-oath/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#2ecc71",
+  "background_color": "#f8f9fa",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%232ecc71;stop-opacity:1' /><stop offset='100%' style='stop-color:%2327ae60;stop-opacity:1' /></linearGradient></defs><rect width='192' height='192' fill='url(%23grad)' rx='45'/><circle cx='75' cy='70' r='8' fill='white'/><circle cx='117' cy='70' r='8' fill='white'/><path d='M 96 110 Q 80 130 65 125' stroke='white' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M 80 95 Q 96 90 112 95' stroke='white' stroke-width='4' fill='none' stroke-linecap='round'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%232ecc71;stop-opacity:1' /><stop offset='100%' style='stop-color:%2327ae60;stop-opacity:1' /></linearGradient></defs><rect width='192' height='192' fill='url(%23grad)' rx='45'/><circle cx='75' cy='70' r='8' fill='white'/><circle cx='117' cy='70' r='8' fill='white'/><path d='M 96 110 Q 80 130 65 125' stroke='white' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M 80 95 Q 96 90 112 95' stroke='white' stroke-width='4' fill='none' stroke-linecap='round'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["sports", "health", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect width='540' height='720' fill='%23f8f9fa'/><rect width='540' height='100' fill='%232ecc71'/><text x='270' y='60' font-size='32' fill='white' text-anchor='middle' font-weight='bold'>Tennis Oath</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ]
+}

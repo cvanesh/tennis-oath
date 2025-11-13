@@ -1,0 +1,772 @@
+/* ========================================
+   GLOBAL STYLES
+   ======================================== */
+
+:root {
+    --primary-color: #2ecc71;
+    --primary-dark: #27ae60;
+    --secondary-color: #3498db;
+    --accent-color: #f39c12;
+    --success-color: #27ae60;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --border-color: #ecf0f1;
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Theme */
+body.dark-mode {
+    --text-dark: #f0f0f0;
+    --text-light: #a0a0a0;
+    --bg-light: #1e1e1e;
+    --bg-white: #2d2d2d;
+    --border-color: #3d3d3d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+    overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* ========================================
+   APP CONTAINER & LAYOUT
+   ======================================== */
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg-light);
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 1.5rem 1rem;
+    box-shadow: var(--shadow-medium);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.app-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.app-title:hover {
+    transform: scale(1.05);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.streak-days {
+    font-size: 1.4rem;
+    font-weight: 700;
+    min-width: 40px;
+    text-align: center;
+}
+
+.settings-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.settings-icon {
+    display: inline-block;
+}
+
+
+
+.main-content {
+    flex: 1;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* ========================================
+   OATH SECTION
+   ======================================== */
+
+.oath-section {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-light);
+}
+
+.oath-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.oath-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.oath-intro {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   QUESTIONS CONTAINER
+   ======================================== */
+
+.questions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.question-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.625rem;
+    background: var(--bg-light);
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-items: flex-start;
+}
+
+.question-item:hover {
+    background: var(--bg-white);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.question-item.acknowledged {
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(46, 204, 113, 0.05) 100%);
+    border-color: var(--success-color);
+}
+
+body.dark-mode .question-item.acknowledged {
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.25) 0%, rgba(46, 204, 113, 0.15) 100%);
+    border-color: var(--success-color);
+}
+
+.question-checkbox {
+    flex-shrink: 0;
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.question-tick {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    color: transparent;
+    margin-top: -2px;
+}
+
+.question-item.acknowledged .question-tick {
+    color: var(--success-color);
+}
+
+.question-content {
+    flex: 1;
+}
+
+.question-number {
+    display: none;
+}
+
+.question-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.question-icon {
+    font-size: 1.5rem;
+    display: inline-block;
+    margin-right: 0.75rem;
+}
+
+/* ========================================
+   SIGN SECTION
+   ======================================== */
+
+.sign-section {
+    text-align: center;
+    padding: 2rem 0;
+    border-top: 2px solid var(--border-color);
+}
+
+.sign-button {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-light);
+}
+
+.sign-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.sign-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.sign-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+}
+
+.button-icon {
+    font-size: 1.3rem;
+}
+
+.sign-helper {
+    margin-top: 0.75rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   STREAK HISTORY
+   ======================================== */
+
+.streak-history {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+}
+
+.calendar-section {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+}
+
+.calendar-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.calendar-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.calendar-intro {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.streak-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    background: var(--bg-light);
+    padding: 1.25rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid var(--border-color);
+}
+
+.stat-label {
+    display: block;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.calendar-day-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 0;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    position: relative;
+}
+
+.calendar-day.visited {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+.calendar-day.today {
+    border-color: var(--accent-color);
+    border-width: 2px;
+}
+
+.calendar-day.empty {
+    background: transparent;
+    border: none;
+    cursor: default;
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.calendar-nav h3 {
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    min-width: 200px;
+    text-align: center;
+}
+
+.calendar-nav-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-light);
+}
+
+.calendar-nav-btn:disabled {
+    background: var(--border-color);
+    color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+
+.footer {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-text {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* ========================================
+   CONFETTI ANIMATION
+   ======================================== */
+
+.confetti {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 640px) {
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .app-title {
+        font-size: 1.5rem;
+    }
+
+    .main-content {
+        padding: 1rem 0.75rem;
+    }
+
+    .oath-section {
+        padding: 1.5rem;
+    }
+
+    .streak-history {
+        padding: 1.5rem;
+    }
+
+    .question-item {
+        gap: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .question-text {
+        font-size: 0.95rem;
+    }
+
+    .oath-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .sign-button {
+        width: 100%;
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 1.3rem;
+    }
+
+    .header-content {
+        padding: 0 0.5rem;
+    }
+
+    .streak-badge {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .streak-days {
+        font-size: 1.2rem;
+    }
+
+    .main-content {
+        padding: 1rem 0.5rem;
+    }
+
+    .oath-section,
+    .streak-history {
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .question-item {
+        padding: 0.45rem;
+    }
+
+    .question-checkbox {
+        width: 24px;
+        height: 24px;
+        font-size: 0.9rem;
+    }
+
+    .calendar-grid {
+        gap: 0.35rem;
+    }
+
+    .calendar-day {
+        font-size: 0.7rem;
+        border-radius: 6px;
+    }
+
+    .calendar-nav-btn {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .nav-label {
+        display: none;
+    }
+}
+
+/* ========================================
+   DARK MODE SUPPORT (Optional)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Don't override :root variables - let JS handle theme switching */
+    body:not(.dark-mode) {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+}
+
+/* ========================================
+   SETTINGS MODAL
+   ======================================== */
+
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+    pointer-events: none;
+}
+
+.settings-modal.active {
+    display: flex;
+    pointer-events: auto;
+}
+
+.settings-content {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: var(--shadow-heavy);
+    animation: slideUp 0.3s ease;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.settings-header h3 {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+}
+
+.close-settings {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: color 0.2s ease;
+}
+
+.close-settings:hover {
+    color: var(--text-dark);
+}
+
+.settings-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.setting-item label {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.theme-toggle,
+.view-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.theme-btn,
+.view-btn {
+    padding: 0.8rem;
+    border: 2px solid var(--border-color);
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.theme-btn:hover,
+.view-btn:hover {
+    border-color: var(--secondary-color);
+    background: var(--bg-white);
+}
+
+.theme-btn.active,
+.view-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.question-item {
+    animation: slideIn 0.2s ease forwards;
+}

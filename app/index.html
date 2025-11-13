@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2ecc71">
+    <meta name="description" content="Tennis Player's Oath - Commitment to Excellence, Improvement, and Love of the Game">
+    <title>Tennis Player's Oath</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='90' fill='%232ecc71'/><circle cx='60' cy='70' r='8' fill='white'/><circle cx='132' cy='70' r='8' fill='white'/><path d='M 96 120 Q 80 140 60 130' stroke='white' stroke-width='4' fill='none'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='90' fill='%232ecc71'/><circle cx='60' cy='70' r='8' fill='white'/><circle cx='132' cy='70' r='8' fill='white'/><path d='M 96 120 Q 80 140 60 130' stroke='white' stroke-width='4' fill='none'/></svg>">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title" id="appTitle">🎾 Serve It Up!</h1>
+                <div class="header-actions">
+                    <div class="streak-badge">
+                        <span class="streak-label">Streak</span>
+                        <span class="streak-days" id="streakDays">0</span>
+                        <span class="streak-unit">days</span>
+                    </div>
+
+                    <button class="settings-btn" id="settingsBtn" title="Settings">
+                        <span class="settings-icon">⚙️</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Oath Section -->
+            <section class="oath-section" id="oathSection">
+                <div class="oath-header">
+                    <h2>Lock In & Serve It!</h2>
+                    <p class="oath-intro">Read each point and give it a click to check it off 💪</p>
+                </div>
+
+                <!-- Questions Container -->
+                <div class="questions-container" id="questionsContainer">
+                    <!-- Questions will be inserted here by JavaScript -->
+                </div>
+
+                <!-- Sign Button -->
+                <div class="sign-section">
+                    <button id="signButton" class="sign-button" disabled>
+                        <span class="button-icon">✌️</span>
+                        Sign the Oath
+                    </button>
+                    <p class="sign-helper" id="signHelper">Acknowledge all 10 points above</p>
+                </div>
+            </section>
+
+            <!-- Calendar Section (Hidden by default) -->
+            <section class="calendar-section" id="calendarSection" style="display: none;">
+                <div class="calendar-header">
+                    <h2>Your Wins 🏆</h2>
+                    <p class="calendar-intro">Every time you sign the oath, we celebrate here!</p>
+                </div>
+                <div class="streak-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Times</span>
+                        <span class="stat-value" id="totalSigns">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">This Week</span>
+                        <span class="stat-value" id="weekSigns">0</span>
+                    </div>
+                </div>
+                
+                <!-- Month Navigation -->
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" id="calendarPrev">←<span class="nav-label"> Previous</span></button>
+                    <h3 id="calendarMonth">November 2025</h3>
+                    <button class="calendar-nav-btn" id="calendarNext"><span class="nav-label">Next </span>→</button>
+                </div>
+                
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be inserted here by JavaScript -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">Have fun. Improve. Love the game. 💚</p>
+        </footer>
+    </div>
+
+    <!-- Confetti after signing -->
+    <div id="confetti-container"></div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="close-settings" id="closeSettings">✕</button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <label>Theme</label>
+                    <div class="theme-toggle">
+                        <button class="theme-btn light-btn" id="lightTheme" title="Light Mode">☀️ Light</button>
+                        <button class="theme-btn dark-btn" id="darkTheme" title="Dark Mode">🌙 Dark</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>Views</label>
+                    <div class="view-buttons">
+                        <button class="view-btn" id="viewOath">📋 Oath</button>
+                        <button class="view-btn" id="viewCalendar">📅 Calendar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+        }
+    </script>
+</body>
+</html>
