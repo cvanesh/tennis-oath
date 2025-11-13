@@ -273,6 +273,9 @@ body.dark-mode .question-item.acknowledged {
     text-align: center;
     padding: 2rem 0;
     border-top: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .sign-button {
