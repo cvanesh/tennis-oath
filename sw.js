@@ -6,7 +6,8 @@ const urlsToCache = [
     '/tennis-oath/index.html',
     '/tennis-oath/styles.css',
     '/tennis-oath/app.js',
-    '/tennis-oath/manifest.json'
+    '/tennis-oath/manifest.json',
+    '/tennis-oath/sw.js'
 ];
 
 // Install event - cache files
