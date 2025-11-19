@@ -1,6 +1,6 @@
 // Service Worker for PWA functionality
 
-const CACHE_NAME = 'tennis-oath-v1';
+const CACHE_NAME = 'tennis-oath-v2';
 const urlsToCache = [
     '/tennis-oath/',
     '/tennis-oath/index.html',
@@ -9,6 +9,9 @@ const urlsToCache = [
     '/tennis-oath/manifest.json',
     '/tennis-oath/sw.js'
 ];
+
+// Version tracking
+const APP_VERSION = '2.0.0';
 
 // Install event - cache files
 self.addEventListener('install', event => {
@@ -40,37 +43,69 @@ self.addEventListener('activate', event => {
     self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network first for app files, cache first for others
 self.addEventListener('fetch', event => {
     // Skip non-GET requests
     if (event.request.method !== 'GET') {
         return;
     }
 
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            if (response) {
-                return response;
-            }
+    const url = new URL(event.request.url);
+    const isAppFile = url.pathname.endsWith('.html') ||
+                      url.pathname.endsWith('.js') ||
+                      url.pathname.endsWith('.css') ||
+                      url.pathname === '/tennis-oath/' ||
+                      url.pathname === '/tennis-oath';
 
-            return fetch(event.request).then(response => {
-                // Don't cache non-successful responses
-                if (!response || response.status !== 200 || response.type !== 'basic') {
+    if (isAppFile) {
+        // Network first for app files - ensures users get updates
+        event.respondWith(
+            fetch(event.request)
+                .then(response => {
+                    // Cache the new version
+                    if (response && response.status === 200) {
+                        const responseToCache = response.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(event.request, responseToCache);
+                        });
+                    }
+                    return response;
+                })
+                .catch(() => {
+                    // Fallback to cache if network fails
+                    return caches.match(event.request);
+                })
+        );
+    } else {
+        // Cache first for other resources
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                if (response) {
                     return response;
                 }
 
-                // Clone the response
-                const responseToCache = response.clone();
+                return fetch(event.request).then(response => {
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response;
+                    }
 
-                caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, responseToCache);
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseToCache);
+                    });
+
+                    return response;
+                }).catch(() => {
+                    return new Response('Offline - please check your connection');
                 });
+            })
+        );
+    }
+});
 
-                return response;
-            }).catch(() => {
-                // If both cache and network fail, return a fallback
-                return new Response('Offline - please check your connection');
-            });
-        })
-    );
+// Message event - allow clients to skip waiting
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });

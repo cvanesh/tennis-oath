@@ -99,6 +99,16 @@
     <!-- Confetti after signing -->
     <div id="confetti-container"></div>
 
+    <!-- Update Available Notification -->
+    <div class="update-notification" id="updateNotification">
+        <div class="update-content">
+            <span class="update-icon">🎉</span>
+            <span class="update-text">New version available!</span>
+            <button class="update-btn" id="updateBtn">Update Now</button>
+            <button class="update-dismiss" id="dismissUpdate">✕</button>
+        </div>
+    </div>
+
     <!-- Splash Screen for Role Selection -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-content">
@@ -177,9 +187,54 @@
 
     <script src="app.js"></script>
     <script>
-        // Register service worker
+        // Register service worker and handle updates
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+            let refreshing = false;
+
+            navigator.serviceWorker.register('sw.js').then(registration => {
+                // Check for updates periodically
+                setInterval(() => {
+                    registration.update();
+                }, 60000); // Check every minute
+
+                // Handle updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New version available
+                            showUpdateNotification(newWorker);
+                        }
+                    });
+                });
+            }).catch(err => console.log('SW registration failed:', err));
+
+            // Reload page when new service worker takes control
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+        }
+
+        function showUpdateNotification(worker) {
+            const notification = document.getElementById('updateNotification');
+            const updateBtn = document.getElementById('updateBtn');
+            const dismissBtn = document.getElementById('dismissUpdate');
+
+            if (notification) {
+                notification.classList.add('show');
+
+                updateBtn.onclick = () => {
+                    worker.postMessage({ type: 'SKIP_WAITING' });
+                };
+
+                dismissBtn.onclick = () => {
+                    notification.classList.remove('show');
+                };
+            }
         }
     </script>
 </body>

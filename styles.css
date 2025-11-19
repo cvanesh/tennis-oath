@@ -671,6 +671,24 @@ body.dark-mode .question-item.acknowledged {
         font-size: 1.2rem;
     }
 
+    .update-notification {
+        width: 95%;
+    }
+
+    .update-content {
+        padding: 0.85rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .update-text {
+        font-size: 0.85rem;
+    }
+
+    .update-btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
     .splash-header h1 {
         font-size: 1.8rem;
     }
@@ -877,6 +895,91 @@ body.dark-mode .question-item.acknowledged {
     font-size: 0.85rem;
     margin-top: 0.05rem;
     font-style: italic;
+}
+
+/* ========================================
+   UPDATE NOTIFICATION
+   ======================================== */
+
+.update-notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10001;
+    transition: top 0.3s ease;
+    max-width: 400px;
+    width: 90%;
+}
+
+.update-notification.show {
+    top: 20px;
+}
+
+.update-content {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-heavy);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideDown 0.3s ease;
+}
+
+.update-icon {
+    font-size: 1.5rem;
+}
+
+.update-text {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.update-btn {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.update-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.update-dismiss {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.update-dismiss:hover {
+    opacity: 1;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* ========================================
