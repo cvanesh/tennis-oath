@@ -2,7 +2,7 @@
 // OATH QUESTIONS
 // ========================================
 
-const OATH_QUESTIONS = [
+const PLAYER_OATH_QUESTIONS = [
     {
         icon: '😊',
         text: 'I am here to have fun and enjoy the game of tennis.'
@@ -53,6 +53,60 @@ const OATH_QUESTIONS = [
     }
 ];
 
+const PARENT_OATH_QUESTIONS = [
+    {
+        icon: '❤️',
+        text: 'I am here to support my child\'s growth, joy, and love for tennis.'
+    },
+    {
+        icon: '🧘',
+        text: 'I will stay calm and composed when my child makes mistakes - they are learning.'
+    },
+    {
+        icon: '😊',
+        text: 'I will not show frustration, anger, or disappointment on court. I am my child\'s role model.'
+    },
+    {
+        icon: '🤝',
+        text: 'I commit to being gracious and courteous to all players, parents, coaches, and officials.'
+    },
+    {
+        icon: '⚖️',
+        text: 'I will not react negatively to questionable calls - sportsmanship comes first.'
+    },
+    {
+        icon: '📚',
+        text: 'I understand that mistakes are learning opportunities, not failures.'
+    },
+    {
+        icon: '🌟',
+        text: 'I will maintain professional decorum and create a positive learning environment.'
+    },
+    {
+        icon: '💪',
+        text: 'I will celebrate my child\'s effort and attitude, not just wins and losses.'
+    },
+    {
+        icon: '🎯',
+        text: 'I trust the process and keep the long-term development goal in mind.'
+    },
+    {
+        icon: '🏆',
+        text: 'I will encourage resilience and perseverance, even in challenging moments.'
+    },
+    {
+        icon: '🎾',
+        text: 'I will respect the game, the equipment, and everyone involved in this journey.'
+    },
+    {
+        icon: '🌈',
+        text: 'I am committed to making tennis a positive, enriching experience for my child.'
+    }
+];
+
+// Keep backward compatibility
+const OATH_QUESTIONS = PLAYER_OATH_QUESTIONS;
+
 // ========================================
 // STATE MANAGEMENT
 // ========================================
@@ -63,16 +117,25 @@ class OathApp {
         this.signedDates = [];
         this.viewMonth = new Date();  // Track current viewing month
         this.viewMonth.setHours(0, 0, 0, 0);
+        this.currentRole = null;  // 'parent' or 'player'
         this.init();
     }
 
     init() {
         this.loadData();
         this.loadTheme();
-        this.renderQuestions();
-        this.renderCalendar();
-        this.updateStreakDisplay();
-        this.updateStats();
+
+        // Check if role is selected, if not show splash screen
+        if (!this.currentRole) {
+            this.showSplashScreen();
+        } else {
+            this.renderQuestions();
+            this.renderCalendar();
+            this.updateStreakDisplay();
+            this.updateStats();
+            this.updateRoleBadge();
+        }
+
         this.setupEventListeners();
     }
 
@@ -83,7 +146,8 @@ class OathApp {
     saveData() {
         const data = {
             acknowledged: Array.from(this.acknowledged),
-            signedDates: this.signedDates
+            signedDates: this.signedDates,
+            currentRole: this.currentRole
         };
         localStorage.setItem('oathData', JSON.stringify(data));
     }
@@ -93,12 +157,38 @@ class OathApp {
         if (saved) {
             try {
                 const data = JSON.parse(saved);
-                this.acknowledged = new Set(data.acknowledged || []);
-                this.signedDates = data.signedDates || [];
+                // Validate role (must be 'parent', 'player', or null)
+                const validRoles = ['parent', 'player'];
+                this.currentRole = validRoles.includes(data.currentRole) ? data.currentRole : null;
+
+                // Validate acknowledged indices (filter out invalid ones)
+                const validAcknowledged = (data.acknowledged || []).filter(index =>
+                    typeof index === 'number' && index >= 0
+                );
+                this.acknowledged = new Set(validAcknowledged);
+
+                // Migrate old data structure to new format
+                if (data.signedDates && data.signedDates.length > 0) {
+                    if (typeof data.signedDates[0] === 'string') {
+                        // Old format: array of date strings
+                        this.signedDates = data.signedDates.map(dateStr => ({
+                            date: dateStr,
+                            roles: ['player']  // Assume old data was player
+                        }));
+                    } else {
+                        // New format: array of objects - validate structure
+                        this.signedDates = data.signedDates.filter(entry =>
+                            entry && entry.date && Array.isArray(entry.roles)
+                        );
+                    }
+                } else {
+                    this.signedDates = [];
+                }
             } catch (e) {
                 console.error('Error loading data:', e);
                 this.acknowledged = new Set();
                 this.signedDates = [];
+                this.currentRole = null;
             }
         }
     }
@@ -111,7 +201,12 @@ class OathApp {
         const container = document.getElementById('questionsContainer');
         container.innerHTML = '';
 
-        OATH_QUESTIONS.forEach((question, index) => {
+        const questions = this.getCurrentOathQuestions();
+
+        // Update oath header based on role
+        this.updateOathHeader();
+
+        questions.forEach((question, index) => {
             const questionEl = document.createElement('div');
             questionEl.className = 'question-item';
             if (this.acknowledged.has(index)) {
@@ -133,6 +228,23 @@ class OathApp {
             questionEl.addEventListener('click', () => this.toggleQuestion(index));
             container.appendChild(questionEl);
         });
+    }
+
+    updateOathHeader() {
+        const headerTitle = document.querySelector('.oath-header h2');
+        const headerIntro = document.querySelector('.oath-intro');
+
+        if (this.currentRole === 'parent') {
+            if (headerTitle) headerTitle.textContent = 'Be the Example 🌟';
+            if (headerIntro) headerIntro.textContent = 'Read each commitment and check it off to support your child\'s journey';
+        } else {
+            if (headerTitle) headerTitle.textContent = 'Lock In & Serve It!';
+            if (headerIntro) headerIntro.textContent = 'Read each point and give it a click to check it off 💪';
+        }
+    }
+
+    getCurrentOathQuestions() {
+        return this.currentRole === 'parent' ? PARENT_OATH_QUESTIONS : PLAYER_OATH_QUESTIONS;
     }
 
     renderCalendar() {
@@ -177,8 +289,19 @@ class OathApp {
             const currentDayDate = new Date(viewYear, viewMonthNum, day);
             currentDayDate.setHours(0, 0, 0, 0);
 
-            if (this.signedDates.includes(dateStr)) {
-                dayEl.classList.add('visited');
+            // Find if this date has been signed and by which roles
+            const signedEntry = this.signedDates.find(entry => entry.date === dateStr);
+            if (signedEntry && signedEntry.roles) {
+                const hasParent = signedEntry.roles.includes('parent');
+                const hasPlayer = signedEntry.roles.includes('player');
+
+                if (hasParent && hasPlayer) {
+                    dayEl.classList.add('visited-both');
+                } else if (hasParent) {
+                    dayEl.classList.add('visited-parent');
+                } else if (hasPlayer) {
+                    dayEl.classList.add('visited-player');
+                }
             }
 
             if (currentDayDate.getTime() === today.getTime()) {
@@ -225,8 +348,8 @@ class OathApp {
         
         if (prevBtn) {
             // Check if there are any signed dates before this month
-            const oldestDate = this.signedDates.length > 0 
-                ? new Date(this.signedDates.sort()[0])
+            const oldestDate = this.signedDates.length > 0
+                ? new Date([...this.signedDates].sort((a, b) => a.date.localeCompare(b.date))[0].date)
                 : new Date();
             oldestDate.setHours(0, 0, 0, 0);
             oldestDate.setDate(1);
@@ -258,15 +381,23 @@ class OathApp {
         const totalEl = document.getElementById('totalSigns');
         const weekEl = document.getElementById('weekSigns');
 
-        totalEl.textContent = this.signedDates.length;
+        // Count total signs (each role per day counts as one)
+        let totalSigns = 0;
+        this.signedDates.forEach(entry => {
+            totalSigns += entry.roles ? entry.roles.length : 1;
+        });
+        totalEl.textContent = totalSigns;
 
         // Count signs this week
         const today = new Date();
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-        const weekCount = this.signedDates.filter(dateStr => {
-            const date = new Date(dateStr);
-            return date >= weekAgo && date <= today;
-        }).length;
+        let weekCount = 0;
+        this.signedDates.forEach(entry => {
+            const date = new Date(entry.date);
+            if (date >= weekAgo && date <= today) {
+                weekCount += entry.roles ? entry.roles.length : 1;
+            }
+        });
 
         weekEl.textContent = weekCount;
     }
@@ -274,7 +405,8 @@ class OathApp {
     updateSignButton() {
         const signBtn = document.getElementById('signButton');
         const signHelper = document.getElementById('signHelper');
-        const allAcknowledged = this.acknowledged.size === OATH_QUESTIONS.length;
+        const questions = this.getCurrentOathQuestions();
+        const allAcknowledged = this.acknowledged.size === questions.length;
 
         signBtn.disabled = !allAcknowledged;
 
@@ -282,7 +414,7 @@ class OathApp {
             signHelper.textContent = '👋 Ready to sign! Go have fun on the court!';
             signHelper.style.color = 'var(--success-color)';
         } else {
-            signHelper.textContent = `Acknowledge all 10 points above (${this.acknowledged.size}/10)`;
+            signHelper.textContent = `Acknowledge all ${questions.length} points above (${this.acknowledged.size}/${questions.length})`;
             signHelper.style.color = 'var(--text-light)';
         }
     }
@@ -314,16 +446,29 @@ class OathApp {
     }
 
     signOath() {
-        if (this.acknowledged.size !== OATH_QUESTIONS.length) {
+        const questions = this.getCurrentOathQuestions();
+        if (this.acknowledged.size !== questions.length) {
             return;
         }
 
-        // Add today's date
+        // Add today's date with role
         const today = new Date();
         const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-        if (!this.signedDates.includes(dateStr)) {
-            this.signedDates.push(dateStr);
+        // Find existing entry for today
+        let existingEntry = this.signedDates.find(entry => entry.date === dateStr);
+
+        if (existingEntry) {
+            // Add role if not already present
+            if (!existingEntry.roles.includes(this.currentRole)) {
+                existingEntry.roles.push(this.currentRole);
+            }
+        } else {
+            // Create new entry
+            this.signedDates.push({
+                date: dateStr,
+                roles: [this.currentRole]
+            });
         }
 
         this.saveData();
@@ -344,14 +489,14 @@ class OathApp {
     calculateStreak() {
         if (this.signedDates.length === 0) return 0;
 
-        // Sort dates in descending order (newest first)
-        const sorted = [...this.signedDates].sort().reverse();
+        // Get unique dates and sort in descending order (newest first)
+        const uniqueDates = [...new Set(this.signedDates.map(entry => entry.date))].sort().reverse();
         let streak = 1; // Start with 1 since we have at least one date
         let currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
 
         // Get the most recent signed date
-        const mostRecentDateStr = sorted[0];
+        const mostRecentDateStr = uniqueDates[0];
         const mostRecentDate = new Date(mostRecentDateStr);
         mostRecentDate.setHours(0, 0, 0, 0);
 
@@ -360,8 +505,8 @@ class OathApp {
         currentDate.setDate(currentDate.getDate() - 1);
 
         // Check for consecutive days
-        for (let i = 1; i < sorted.length; i++) {
-            const dateStr = sorted[i];
+        for (let i = 1; i < uniqueDates.length; i++) {
+            const dateStr = uniqueDates[i];
             const date = new Date(dateStr);
             date.setHours(0, 0, 0, 0);
 
@@ -439,12 +584,131 @@ class OathApp {
     }
 
     // ========================================
+    // ROLE MANAGEMENT
+    // ========================================
+
+    showSplashScreen() {
+        const splashScreen = document.getElementById('splashScreen');
+        const header = document.querySelector('.header');
+        const mainContent = document.getElementById('mainContent');
+        const footer = document.querySelector('.footer');
+
+        if (splashScreen) {
+            splashScreen.classList.add('active');
+        }
+        // Hide main app during splash
+        if (header) header.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'none';
+        if (footer) footer.style.display = 'none';
+    }
+
+    hideSplashScreen() {
+        const splashScreen = document.getElementById('splashScreen');
+        const header = document.querySelector('.header');
+        const mainContent = document.getElementById('mainContent');
+        const footer = document.querySelector('.footer');
+
+        if (splashScreen) {
+            splashScreen.classList.remove('active');
+        }
+        // Show main app after splash
+        if (header) header.style.display = '';
+        if (mainContent) mainContent.style.display = '';
+        if (footer) footer.style.display = '';
+    }
+
+    selectRole(role) {
+        // Clear any previous acknowledgments when selecting a role
+        this.acknowledged.clear();
+        this.currentRole = role;
+        this.saveData();
+        this.hideSplashScreen();
+        this.renderQuestions();
+        this.renderCalendar();
+        this.updateStreakDisplay();
+        this.updateStats();
+        this.updateSignButton();
+        this.updateRoleBadge();
+    }
+
+    updateRoleBadge() {
+        const roleBadge = document.getElementById('roleBadge');
+        if (roleBadge && this.currentRole) {
+            const roleText = this.currentRole === 'parent' ? '👨‍👩‍👧 Parent' : '🎾 Player';
+            roleBadge.innerHTML = `<span class="role-label">Role</span><span class="role-value">${roleText}</span>`;
+        }
+    }
+
+    showRoleSwitchModal() {
+        const modal = document.getElementById('roleSwitchModal');
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
+    hideRoleSwitchModal() {
+        const modal = document.getElementById('roleSwitchModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    switchRole(newRole) {
+        if (newRole === this.currentRole) {
+            this.hideRoleSwitchModal();
+            return;
+        }
+
+        // Clear current acknowledgments
+        this.acknowledged.clear();
+        this.currentRole = newRole;
+        this.saveData();
+
+        // Update UI
+        this.renderQuestions(); // This calls updateOathHeader internally
+        this.updateSignButton();
+        this.updateRoleBadge();
+        this.hideRoleSwitchModal();
+    }
+
+    // ========================================
     // EVENT LISTENERS
     // ========================================
 
     setupEventListeners() {
         const signBtn = document.getElementById('signButton');
-        signBtn.addEventListener('click', () => this.signOath());
+        if (signBtn) signBtn.addEventListener('click', () => this.signOath());
+
+        // Splash screen role selection
+        const parentRoleBtn = document.getElementById('selectParentRole');
+        const playerRoleBtn = document.getElementById('selectPlayerRole');
+        if (parentRoleBtn) parentRoleBtn.addEventListener('click', () => this.selectRole('parent'));
+        if (playerRoleBtn) playerRoleBtn.addEventListener('click', () => this.selectRole('player'));
+
+        // Role badge click to show switch modal
+        const roleBadge = document.getElementById('roleBadge');
+        if (roleBadge) roleBadge.addEventListener('click', () => this.showRoleSwitchModal());
+
+        // Role switch modal
+        const switchToParentBtn = document.getElementById('switchToParent');
+        const switchToPlayerBtn = document.getElementById('switchToPlayer');
+        const cancelSwitchBtn = document.getElementById('cancelSwitch');
+        const closeSwitchModal = document.getElementById('closeRoleSwitchModal');
+
+        if (switchToParentBtn) switchToParentBtn.addEventListener('click', () => this.switchRole('parent'));
+        if (switchToPlayerBtn) switchToPlayerBtn.addEventListener('click', () => this.switchRole('player'));
+        if (cancelSwitchBtn) cancelSwitchBtn.addEventListener('click', () => this.hideRoleSwitchModal());
+        if (closeSwitchModal) closeSwitchModal.addEventListener('click', () => this.hideRoleSwitchModal());
+
+        // Close modal on backdrop click
+        const roleSwitchModal = document.getElementById('roleSwitchModal');
+        if (roleSwitchModal) {
+            roleSwitchModal.addEventListener('click', (e) => {
+                if (e.target === roleSwitchModal) {
+                    this.hideRoleSwitchModal();
+                }
+            });
+        }
 
         // Settings button
         const settingsBtn = document.getElementById('settingsBtn');

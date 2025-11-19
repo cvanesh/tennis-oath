@@ -18,6 +18,11 @@
             <div class="header-content">
                 <h1 class="app-title" id="appTitle">🎾 Djoker Mindset</h1>
                 <div class="header-actions">
+                    <div class="role-badge" id="roleBadge">
+                        <span class="role-label">Role</span>
+                        <span class="role-value">Player</span>
+                    </div>
+
                     <div class="streak-badge">
                         <span class="streak-label">Streak</span>
                         <span class="streak-days" id="streakDays">0</span>
@@ -51,7 +56,7 @@
                         <span class="button-icon">✌️</span>
                         Sign the Oath
                     </button>
-                    <p class="sign-helper" id="signHelper">Acknowledge all 10 points above</p>
+                    <p class="sign-helper" id="signHelper">Acknowledge all 12 points above</p>
                 </div>
             </section>
 
@@ -93,6 +98,52 @@
 
     <!-- Confetti after signing -->
     <div id="confetti-container"></div>
+
+    <!-- Splash Screen for Role Selection -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-header">
+                <h1>🎾 Djoker Mindset</h1>
+                <p>Choose your role to begin</p>
+            </div>
+            <div class="role-selection">
+                <button class="role-select-btn parent-btn" id="selectParentRole">
+                    <span class="role-icon">👨‍👩‍👧</span>
+                    <span class="role-title">I'm a Parent</span>
+                    <span class="role-desc">Supporting my child's journey</span>
+                </button>
+                <button class="role-select-btn player-btn" id="selectPlayerRole">
+                    <span class="role-icon">🎾</span>
+                    <span class="role-title">I'm a Player</span>
+                    <span class="role-desc">Ready to step on the court</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Switch Modal -->
+    <div class="role-switch-modal" id="roleSwitchModal">
+        <div class="role-switch-content">
+            <div class="role-switch-header">
+                <h3>Switch Role</h3>
+                <button class="close-role-switch" id="closeRoleSwitchModal">✕</button>
+            </div>
+            <div class="role-switch-body">
+                <p class="warning-text">⚠️ Switching roles will discard current selections</p>
+                <div class="role-switch-buttons">
+                    <button class="role-switch-btn parent-switch" id="switchToParent">
+                        <span class="role-icon">👨‍👩‍👧</span>
+                        Switch to Parent
+                    </button>
+                    <button class="role-switch-btn player-switch" id="switchToPlayer">
+                        <span class="role-icon">🎾</span>
+                        Switch to Player
+                    </button>
+                </div>
+                <button class="cancel-btn" id="cancelSwitch">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Settings Modal -->
     <div class="settings-modal" id="settingsModal">
